@@ -1,5 +1,9 @@
 import { JupyterLab, JupyterLabPlugin } from '@jupyterlab/application';
 
+import { IRenderMimeRegistry } from '@jupyterlab/rendermime';
+
+import { dataMimeRendererFactory } from './mimerenderer';
+
 import '../style/index.css';
 
 /**
@@ -8,8 +12,9 @@ import '../style/index.css';
 const extension: JupyterLabPlugin<void> = {
   id: 'jupyterlab-datarenderer',
   autoStart: true,
-  activate: (app: JupyterLab) => {
-    console.log('JupyterLab extension jupyterlab-datarenderer is activated!');
+  requires: [IRenderMimeRegistry],
+  activate: (app: JupyterLab, rendermime: IRenderMimeRegistry) => {
+    rendermime.addFactory(dataMimeRendererFactory);
   }
 };
 

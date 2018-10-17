@@ -31,7 +31,10 @@
     "watch": "tsc -w"
   },
   "dependencies": {
-    "@jupyterlab/application": "^0.19.1"
+    "@jupyterlab/application": "^0.19.1",
+    "@jupyterlab/docregistry": "^0.19.1",
+    "@jupyterlab/rendermime": "^0.19.1",
+    "@jupyterlab/rendermime-interfaces": "^1.2.1"
   },
   "devDependencies": {
     "husky": "^0.14.3",
