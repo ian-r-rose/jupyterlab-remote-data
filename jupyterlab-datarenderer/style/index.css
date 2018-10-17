@@ -1,0 +1,22 @@
+/*-----------------------------------------------------------------------------
+| Copyright (c) Jupyter Development Team.
+| Distributed under the terms of the Modified BSD License.
+|----------------------------------------------------------------------------*/
+
+.jp-VideoPlayer {
+  overflow: auto;
+}
+
+.jp-VideoPlayer video {
+  width: 100%;
+  height: auto;
+}
+
+.jp-AudioPlayer {
+  overflow: auto;
+}
+
+.jp-AudioPlayer audio {
+  width: 100%;
+  height: auto;
+}
