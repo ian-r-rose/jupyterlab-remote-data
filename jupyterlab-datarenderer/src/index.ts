@@ -2,7 +2,7 @@ import { JupyterLab, JupyterLabPlugin } from '@jupyterlab/application';
 
 import { IRenderMimeRegistry } from '@jupyterlab/rendermime';
 
-import { dataMimeRendererFactory } from './mimerenderer';
+import { remoteDataRendererFactory } from './mimerenderer';
 
 import '../style/index.css';
 
@@ -14,7 +14,7 @@ const extension: JupyterLabPlugin<void> = {
   autoStart: true,
   requires: [IRenderMimeRegistry],
   activate: (app: JupyterLab, rendermime: IRenderMimeRegistry) => {
-    rendermime.addFactory(dataMimeRendererFactory);
+    rendermime.addFactory(remoteDataRendererFactory);
   }
 };
 

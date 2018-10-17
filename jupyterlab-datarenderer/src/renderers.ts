@@ -5,24 +5,33 @@
 
 import { Widget } from '@phosphor/widgets';
 
-import { DataRendererRegistry, IDataLocation } from './registry';
+import { RemoteDataRendererRegistry, IDataLocation } from './registry';
 
+/**
+ * A data renderer for images.
+ */
 export class ImageRenderer extends Widget
-  implements DataRendererRegistry.IRenderer {
+  implements RemoteDataRendererRegistry.IRenderer {
   constructor() {
     super();
     const image = document.createElement('img');
     this.node.appendChild(image);
   }
 
+  /**
+   * Render the data.
+   */
   render(data: IDataLocation): Promise<void> {
     this.node.querySelector('img').setAttribute('src', data.url);
     return Promise.resolve(void 0);
   }
 }
 
+/**
+ * A data renderer for PDFs.
+ */
 export class PDFRenderer extends Widget
-  implements DataRendererRegistry.IRenderer {
+  implements RemoteDataRendererRegistry.IRenderer {
   constructor() {
     super();
     this.addClass('jp-PDFContainer');
@@ -32,14 +41,20 @@ export class PDFRenderer extends Widget
     this.node.appendChild(pdf);
   }
 
+  /**
+   * Render the data.
+   */
   render(data: IDataLocation): Promise<void> {
     this.node.querySelector('embed').setAttribute('src', data.url);
     return Promise.resolve(void 0);
   }
 }
 
+/**
+ * A data renderer for videos.
+ */
 export class VideoRenderer extends Widget
-  implements DataRendererRegistry.IRenderer {
+  implements RemoteDataRendererRegistry.IRenderer {
   constructor() {
     super();
     this.addClass('jp-VideoPlayer');
@@ -48,6 +63,9 @@ export class VideoRenderer extends Widget
     this.node.appendChild(video);
   }
 
+  /**
+   * Render the data.
+   */
   render(data: IDataLocation): Promise<void> {
     const video = this.node.querySelector('video')!;
     video.setAttribute('src', data.url);
@@ -56,8 +74,11 @@ export class VideoRenderer extends Widget
   }
 }
 
+/**
+ * A data renderer for audio.
+ */
 export class AudioRenderer extends Widget
-  implements DataRendererRegistry.IRenderer {
+  implements RemoteDataRendererRegistry.IRenderer {
   constructor() {
     super();
     this.addClass('jp-AudioPlayer');
@@ -66,6 +87,9 @@ export class AudioRenderer extends Widget
     this.node.appendChild(video);
   }
 
+  /**
+   * Render the data.
+   */
   render(data: IDataLocation): Promise<void> {
     const audio = this.node.querySelector('audio')!;
     audio.setAttribute('src', data.url);

@@ -3,7 +3,7 @@
 | Distributed under the terms of the Modified BSD License.
 |----------------------------------------------------------------------------*/
 
-import { DataRendererRegistry } from './registry';
+import { RemoteDataRendererRegistry } from './registry';
 
 import {
   AudioRenderer,
@@ -12,12 +12,18 @@ import {
   VideoRenderer
 } from './renderers';
 
-export const audioRendererFactory: DataRendererRegistry.IRendererFactory = {
+/**
+ * Audio data renderer factory.
+ */
+export const audioRendererFactory: RemoteDataRendererRegistry.IRendererFactory = {
   mimeTypes: ['audio/ogg', 'audio/webm', 'audio/mp3'],
   createRenderer: options => new AudioRenderer()
 };
 
-export const imageRendererFactory: DataRendererRegistry.IRendererFactory = {
+/**
+ * Image data renderer factory.
+ */
+export const imageRendererFactory: RemoteDataRendererRegistry.IRendererFactory = {
   mimeTypes: [
     'image/png',
     'image/svg',
@@ -29,16 +35,25 @@ export const imageRendererFactory: DataRendererRegistry.IRendererFactory = {
   createRenderer: options => new ImageRenderer()
 };
 
-export const pdfRendererFactory: DataRendererRegistry.IRendererFactory = {
+/**
+ * PDF data renderer factory.
+ */
+export const pdfRendererFactory: RemoteDataRendererRegistry.IRendererFactory = {
   mimeTypes: ['application/pdf'],
   createRenderer: options => new PDFRenderer()
 };
 
-export const videoRendererFactory: DataRendererRegistry.IRendererFactory = {
+/**
+ * Video data renderer factory.
+ */
+export const videoRendererFactory: RemoteDataRendererRegistry.IRendererFactory = {
   mimeTypes: ['video/mp4', 'video/ogg', 'video/webm'],
   createRenderer: options => new VideoRenderer()
 };
 
+/**
+ * A set of default data renderer factories.
+ */
 export const defaultFactories = [
   audioRendererFactory,
   imageRendererFactory,
