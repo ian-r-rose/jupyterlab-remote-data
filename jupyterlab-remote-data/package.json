@@ -1,5 +1,5 @@
 {
-  "name": "jupyterlab-datarenderer",
+  "name": "jupyterlab-remote-data",
   "version": "0.1.0",
   "description": "JupyterLab infrastructure for rendering larger datasets than fit in memory",
   "keywords": [
@@ -7,9 +7,9 @@
     "jupyterlab",
     "jupyterlab-extension"
   ],
-  "homepage": "https://github.com/my_name/myextension",
+  "homepage": "https://github.com/ian-r-rose/jupyterlab-remote-data",
   "bugs": {
-    "url": "https://github.com/my_name/myextension/issues"
+    "url": "https://github.com/ian-r-rose/jupyterlab-remote-data/issues"
   },
   "license": "BSD-3-Clause",
   "author": "Ian Rose",
@@ -32,7 +32,6 @@
   },
   "dependencies": {
     "@jupyterlab/application": "^0.19.1",
-    "@jupyterlab/docregistry": "^0.19.1",
     "@jupyterlab/rendermime": "^0.19.1",
     "@jupyterlab/rendermime-interfaces": "^1.2.1"
   },

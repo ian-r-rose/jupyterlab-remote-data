@@ -1,4 +1,4 @@
-# jupyterlab-datarenderer
+# jupyterlab-remote-data
 
 JupyterLab infrastructure for rendering larger datasets than fit in memory
 
@@ -9,7 +9,7 @@ JupyterLab infrastructure for rendering larger datasets than fit in memory
 ## Installation
 
 ```bash
-jupyter labextension install jupyterlab-datarenderer
+jupyter labextension install jupyterlab-remote-data
 ```
 
 ## Development
