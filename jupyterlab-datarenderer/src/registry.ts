@@ -7,6 +7,8 @@ import { IRenderMime } from '@jupyterlab/rendermime-interfaces';
 
 import { Widget } from '@phosphor/widgets';
 
+import { defaultFactories } from './factories';
+
 /**
  * An interface describing a dataset and a url for accessing it.
  */
@@ -30,30 +32,49 @@ export interface IDataLocation {
  * (potentially large) data.
  */
 export class DataRendererRegistry {
+  constructor(options: DataRendererRegistry.IOptions = {}) {
+    const initialFactories = options.initialFactories || defaultFactories;
+    for (let factory of initialFactories) {
+      this.addFactory(factory);
+    }
+  }
+
+  addFactory(factory: DataRendererRegistry.IRendererFactory): void {
+    for (let mt of factory.mimeTypes) {
+      this._factories[mt] = factory;
+    }
+  }
+  removeMimeType(mimeType: string): void {
+    delete this._factories[mimeType];
+  }
+
   createRenderer(
     options: IRenderMime.IRendererOptions
   ): DataRendererRegistry.IRenderer {
-    return new Private.ImageRenderer();
+    const mime = options.mimeType;
+    if (!(mime in this._factories)) {
+      throw Error(`MIME Type ${mime} is not known to the registry`);
+    }
+    const factory = this._factories[mime];
+    return factory.createRenderer(options);
   }
+
+  private _factories: {
+    [key: string]: DataRendererRegistry.IRendererFactory;
+  } = {};
 }
 
 export namespace DataRendererRegistry {
+  export interface IOptions {
+    initialFactories?: IRendererFactory[];
+  }
+
+  export interface IRendererFactory {
+    readonly mimeTypes: string[];
+    createRenderer(options: IRenderMime.IRendererOptions): IRenderer;
+  }
+
   export interface IRenderer extends Widget {
     render(data: IDataLocation): Promise<void>;
-  }
-}
-
-namespace Private {
-  export class ImageRenderer extends Widget {
-    constructor() {
-      super();
-      let image = document.createElement('img');
-      this.node.appendChild(image);
-    }
-
-    render(data: IDataLocation): Promise<void> {
-      (this.node.children[0] as HTMLImageElement).src = data.url;
-      return Promise.resolve(void 0);
-    }
   }
 }
