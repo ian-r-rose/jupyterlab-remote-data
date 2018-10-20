@@ -10,7 +10,7 @@ import '../style/index.css';
  * Initialization data for the jupyterlab-datarenderer extension.
  */
 const extension: JupyterLabPlugin<void> = {
-  id: 'jupyterlab-datarenderer',
+  id: 'jupyterlab-remote-data',
   autoStart: true,
   requires: [IRenderMimeRegistry],
   activate: (app: JupyterLab, rendermime: IRenderMimeRegistry) => {

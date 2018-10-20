@@ -9,6 +9,8 @@ import { Widget } from '@phosphor/widgets';
 
 import { defaultFactories } from './factories';
 
+import { cloudOptimizedGeoTIFFFactory } from './geotiff';
+
 /**
  * An interface describing a dataset and a url for accessing it.
  */
@@ -54,6 +56,7 @@ export class RemoteDataRendererRegistry {
     for (let factory of initialFactories) {
       this.addFactory(factory);
     }
+    this.addFactory(cloudOptimizedGeoTIFFFactory);
   }
 
   /**
