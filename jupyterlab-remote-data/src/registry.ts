@@ -9,7 +9,7 @@ import { Widget } from '@phosphor/widgets';
 
 import { defaultFactories } from './factories';
 
-import { cloudOptimizedGeoTIFFFactory } from './geotiff';
+import { cloudOptimizedGeoTIFFFactory } from './cog';
 
 /**
  * An interface describing a dataset and a url for accessing it.

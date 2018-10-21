@@ -9,6 +9,10 @@ import { Widget } from '@phosphor/widgets';
 
 import { RemoteDataRendererRegistry, IDataLocation } from './registry';
 
+import * as GeoTIFF from 'geotiff';
+
+import * as plotty from 'plotty';
+
 import leaflet from 'leaflet';
 
 import 'leaflet/dist/leaflet.css';
@@ -22,8 +26,11 @@ const CSS_CLASS = 'jp-COGViewer';
  * The url template that leaflet tile layers.
  * See http://leafletjs.com/reference-1.0.3.html#tilelayer
  */
-const URL_TEMPLATE: string =
-  'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+const URL_TEMPLATE =
+  'https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}{r}.png';
+
+const RADIANT_URL =
+  'https://bstlgagxwg.execute-api.us-east-1.amazonaws.com/production';
 
 const MIME_TYPE = 'image/geotiff';
 
@@ -39,25 +46,38 @@ const LAYER_OPTIONS: leaflet.TileLayerOptions = {
 };
 
 /*tslint:disable-next-line */
-const GeoTiffLayer = leaflet.GridLayer.extend({
-  createTile: function(coords: any) {
+export const GeoTiffLayer = leaflet.GridLayer.extend({
+  options: {
+    url: ''
+  },
+  initialize: function(name: string, options: any) {
+    /*tslint:disable-next-line */
+    this.name = name;
+    /*tslint:disable-next-line */
+    (leaflet as any).setOptions(this, options);
+  },
+  createTile: function(coords: any, done: () => void) {
     const tile = document.createElement('canvas');
     /*tslint:disable-next-line */
     const tileSize = this.getTileSize();
     tile.setAttribute('width', tileSize.x);
     tile.setAttribute('height', tileSize.y);
-    const ctx = tile.getContext('2d');
 
-    ctx.beginPath();
-    ctx.arc(
-      tileSize.x / 2,
-      tileSize.x / 2,
-      4 + coords.z * 4,
-      0,
-      2 * Math.PI,
-      false
-    );
-    ctx.fill();
+    /*tslint:disable-next-line */
+    GeoTIFF.fromUrl(this.options.url).then(async (tiff: any) => {
+      const image = await tiff.getImage();
+      const raster = await image.readRasters();
+      const plot = new plotty.plot({
+        tile,
+        data: raster[0],
+        width: image.getWidth(),
+        height: image.getHeight(),
+        domain: [0, 256],
+        colorScale: 'viridis'
+      });
+      plot.render();
+      done();
+    });
     return tile;
   }
 });
@@ -93,14 +113,25 @@ export class CloudOptimizedGeoTIFFRenderer extends Widget
    * Render GeoJSON into this widget's node.
    */
   async render(data: IDataLocation): Promise<void> {
-    return new Promise<void>((resolve, reject) => {
-      // Add leaflet tile layer to map
-      leaflet.tileLayer(URL_TEMPLATE, LAYER_OPTIONS).addTo(this._map);
-      const layer = new GeoTiffLayer();
-      layer.addTo(this._map);
-      this.update();
-      resolve();
-    });
+    // Add leaflet tile layer to map
+    leaflet.tileLayer(URL_TEMPLATE, LAYER_OPTIONS).addTo(this._map);
+    const url = encodeURI(data.url);
+    leaflet
+      .tileLayer(`${RADIANT_URL}/tiles/{z}/{x}/{y}.jpg?url=${url}`)
+      .addTo(this._map);
+    const response = await fetch(`${RADIANT_URL}/bounds?url=${url}`);
+    const responseData = await response.json();
+    const b = (this._bounds = responseData.bounds);
+    this._map.fitBounds([[b[1], b[0]], [b[3], b[2]]]);
+    this.update();
+    return;
+  }
+
+  /**
+   * A message hander to be invoked on `'resize'` messages.
+   */
+  protected onResize(msg: Message): void {
+    this.update();
   }
 
   /**
@@ -123,20 +154,6 @@ export class CloudOptimizedGeoTIFFRenderer extends Widget
   }
 
   /**
-   * A message handler invoked on an `'after-show'` message.
-   */
-  protected onAfterShow(msg: Message): void {
-    this.update();
-  }
-
-  /**
-   * A message handler invoked on a `'resize'` message.
-   */
-  protected onResize(msg: Widget.ResizeMessage): void {
-    this.update();
-  }
-
-  /**
    * A message handler invoked on an `'update-request'` message.
    */
   protected onUpdateRequest(msg: Message): void {
@@ -144,9 +161,14 @@ export class CloudOptimizedGeoTIFFRenderer extends Widget
     if (this.isVisible) {
       this._map.invalidateSize();
     }
-    this._map.fitBounds([[40.712, -74.227], [40.774, -74.125]]);
+    const b = this._bounds;
+    if (!b) {
+      return;
+    }
+    this._map.fitBounds([[b[1], b[0]], [b[3], b[2]]]);
   }
 
+  private _bounds: number[] | undefined;
   private _map: leaflet.Map;
 }
 
