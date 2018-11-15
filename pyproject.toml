@@ -1,0 +1,11 @@
+[build-system]
+requires = ["flit"]
+build-backend = "flit.buildapi"
+
+[tool.flit.metadata]
+module = "remotecontentmanager"
+author = "Matthias Bussonnier and Ian Rose"
+author-email = "bussonniermatthias@gmail.com and ian-r-rose@gmail.com"
+home-page = "https://github.com/ian-r-rose/jupyterlab-remote-data"
+classifiers = ["License :: OSI Approved :: MIT License"]
+
