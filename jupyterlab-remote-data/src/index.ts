@@ -1,21 +1,34 @@
-import { JupyterLab, JupyterLabPlugin } from '@jupyterlab/application';
-
-import { IRenderMimeRegistry } from '@jupyterlab/rendermime';
+import { IRenderMime } from '@jupyterlab/rendermime-interfaces';
 
 import { remoteDataRendererFactory } from './mimerenderer';
 
 import '../style/index.css';
 
+const fileTypes = [
+  {
+    name: 'Remote Data',
+    displayName: 'Remote Data',
+    fileFormat: 'string',
+    mimeTypes: ['application/vnd.jupyter.dataset+json'],
+    extensions: ['.big']
+  }
+];
+
 /**
  * Initialization data for the jupyterlab-datarenderer extension.
  */
-const extension: JupyterLabPlugin<void> = {
+const mimeExtension: IRenderMime.IExtension = {
   id: 'jupyterlab-datarenderer',
-  autoStart: true,
-  requires: [IRenderMimeRegistry],
-  activate: (app: JupyterLab, rendermime: IRenderMimeRegistry) => {
-    rendermime.addFactory(remoteDataRendererFactory);
+  rendererFactory: remoteDataRendererFactory,
+  dataType: 'json',
+  fileTypes,
+  documentWidgetFactoryOptions: {
+    name: 'Remote Data',
+    modelName: 'text',
+    primaryFileType: 'Remote Data',
+    defaultFor: ['Remote Data'],
+    fileTypes: ['Remote Data']
   }
 };
 
-export default extension;
+export default mimeExtension;

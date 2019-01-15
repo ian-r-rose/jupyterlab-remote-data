@@ -64,11 +64,15 @@ class RemoteLocalFileManager(LargeFileManager):
             raise ValueError(
                 "could not stat `{}`, not risking to send a loarge amount of data to the frontend."
             )
-        if model["size"] >= self.threshold or model['path'].endswith("big"):
+        if model["size"] >= self.threshold or model['path'].endswith(".big"):
             model["inner_mimetype"] = model["mimetype"]
             model["mimetype"] = MIMETYPE
-            model['content'] = MIMETYPE
-            model['format'] = MIMETYPE
+            if content:
+                model['content'] = {
+                        'mimeType': mimetypes.guess_type(os_path[:-4])[0],
+                        'url': f'http://localhost:8888/files/{path}'
+                        }
+                model['format'] = 'json'
             print("end with big returning model:", model)
             return model
 

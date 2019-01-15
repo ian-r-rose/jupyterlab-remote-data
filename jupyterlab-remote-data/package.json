@@ -52,6 +52,6 @@
     ]
   },
   "jupyterlab": {
-    "extension": true
+    "mimeExtension": true
   }
 }
