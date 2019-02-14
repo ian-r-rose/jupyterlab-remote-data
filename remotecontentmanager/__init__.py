@@ -56,7 +56,10 @@ def build_hdf5_sumary(path):
         import h5py
     except ImportError:
         return "Install h5py on notebook server to see a hdf5 summary."
-    f = h5py.File(path)
+    try:
+        f = h5py.File(path)
+    except Exception:
+        return "Something went wrong trying to read the content of this HDF5 file."
     return str(visit(f))
 
 
