@@ -42,6 +42,12 @@ def extension_heuristic(model) -> bool:
     """
     return model['path'].endswith("mp4")
 
+def build_hdf5_sumary(path):
+    import h5py
+    f = h5py.File(path)
+    return f"This hdf5 dataset has {len(f.keys())} items:" + ','.join(f.keys())
+
+
 class RemoteLocalFileManager(LargeFileManager):
 
     # is_hidden
@@ -91,6 +97,7 @@ class RemoteLocalFileManager(LargeFileManager):
             actual_path = model['path']
             ## probably need to munge the path so it is relativ to CWD
             data = {
+                "Markdown": build_hdf5_sumary(actual_path),
                 "Python":f"""import h5py
 f = h5py.File('{actual_path}', 'r')""",
                 "Julia":"""using HDF5
