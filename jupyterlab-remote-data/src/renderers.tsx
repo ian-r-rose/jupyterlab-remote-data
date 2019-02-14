@@ -7,6 +7,9 @@ import { Widget } from '@phosphor/widgets';
 
 import { RemoteDataRendererRegistry, IDataLocation } from './registry';
 
+import * as React from 'react';
+import * as ReactDOM from 'react-dom';
+
 /**
  * A data renderer for images.
  */
@@ -112,7 +115,16 @@ export class HDF5Renderer extends Widget
    * Render the data.
    */
   render(data: IDataLocation): Promise<void> {
-    this.node.textContent = JSON.stringify(data.url);
+    const languages = Object.keys(data.url);
+    const listing = languages.map(lang => {
+      return (
+        <div key={lang}>
+          <h1>{lang}</h1>
+          <pre>{(data.url as any)[lang]}</pre>
+        </div>
+      );
+    });
+    ReactDOM.render(<div>{listing}</div>, this.node);
     return Promise.resolve(void 0);
   }
 }
