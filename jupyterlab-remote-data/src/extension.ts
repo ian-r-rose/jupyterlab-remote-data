@@ -7,6 +7,10 @@ import { IFileBrowserFactory } from '@jupyterlab/filebrowser';
 
 import { IDocumentManager } from '@jupyterlab/docmanager';
 
+import { IRenderMimeRegistry } from '@jupyterlab/rendermime';
+
+import { Cheat } from './renderers';
+
 const FACTORY = 'Remote Data';
 const DATA_MIME = 'application/vnd.jupyter.dataset+json';
 
@@ -15,7 +19,7 @@ const DATA_MIME = 'application/vnd.jupyter.dataset+json';
  */
 const browserMonkeyPatch: JupyterFrontEndPlugin<void> = {
   id: 'jupyterlab-remote-data:browser-monkey-patch',
-  requires: [IDocumentManager, IFileBrowserFactory],
+  requires: [IDocumentManager, IFileBrowserFactory, IRenderMimeRegistry],
   activate: activateMonkeyPatch,
   autoStart: true
 };
@@ -26,8 +30,10 @@ const browserMonkeyPatch: JupyterFrontEndPlugin<void> = {
 function activateMonkeyPatch(
   app: JupyterFrontEnd,
   manager: IDocumentManager,
-  factory: IFileBrowserFactory
+  factory: IFileBrowserFactory,
+  rendermime: IRenderMimeRegistry
 ): void {
+  Cheat.rendermime = rendermime;
   const browser = factory.defaultBrowser;
   const handleEvent = async (evt: Event): Promise<void> => {
     const event = evt as MouseEvent;

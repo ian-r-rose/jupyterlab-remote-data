@@ -3,6 +3,8 @@
 | Distributed under the terms of the Modified BSD License.
 |----------------------------------------------------------------------------*/
 
+import { IRenderMimeRegistry, MimeModel } from '@jupyterlab/rendermime';
+
 import { Widget } from '@phosphor/widgets';
 
 import { RemoteDataRendererRegistry, IDataLocation } from './registry';
@@ -109,13 +111,26 @@ export class HDF5Renderer extends Widget
   constructor() {
     super();
     this.addClass('jp-HDF5Renderer');
-   this.addClass('jp-RenderedHTMLCommon');
+    this.addClass('jp-RenderedHTMLCommon');
+    this._langListing = document.createElement('div');
+    this._summary = document.createElement('div');
+    this.node.appendChild(this._summary);
+    this.node.appendChild(this._langListing);
   }
 
   /**
    * Render the data.
    */
   render(data: IDataLocation): Promise<void> {
+    const renderer = Cheat.rendermime.createRenderer('application/json');
+
+    const mimeData = new MimeModel();
+    mimeData.setData({
+      data: { 'application/json': (data.url as any)['summary'] }
+    });
+    renderer.renderModel(mimeData);
+    this._summary.appendChild(renderer.node);
+
     const languages = Object.keys(data.url);
     const listing = languages.map(lang => {
       return (
@@ -125,7 +140,14 @@ export class HDF5Renderer extends Widget
         </div>
       );
     });
-    ReactDOM.render(<div>{listing}</div>, this.node);
+    ReactDOM.render(<div>{listing}</div>, this._langListing);
     return Promise.resolve(void 0);
   }
+
+  private _langListing: HTMLElement;
+  private _summary: HTMLElement;
+}
+
+export namespace Cheat {
+  export let rendermime: IRenderMimeRegistry | null = null;
 }
