@@ -126,13 +126,16 @@ export class HDF5Renderer extends Widget
 
     const mimeData = new MimeModel();
     mimeData.setData({
-      data: { 'application/json': (data.url as any)['summary'] }
+      data: { 'application/json': (data.url as any).summary }
     });
     renderer.renderModel(mimeData);
     this._summary.appendChild(renderer.node);
 
     const languages = Object.keys(data.url);
     const listing = languages.map(lang => {
+      if (lang === 'summary') {
+        return undefined;
+      }
       return (
         <div key={lang}>
           <h1>{lang}</h1>
