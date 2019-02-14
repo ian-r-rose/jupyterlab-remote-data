@@ -57,7 +57,7 @@ def build_hdf5_sumary(path):
     except ImportError:
         return "Install h5py on notebook server to see a hdf5 summary."
     f = h5py.File(path)
-    return visit(f)
+    return str(visit(f))
 
 
 class RemoteLocalFileManager(LargeFileManager):
