@@ -97,3 +97,22 @@ export class AudioRenderer extends Widget
     return Promise.resolve(void 0);
   }
 }
+
+/**
+ * A data renderer for HDF5 Metadata.
+ */
+export class HDF5Renderer extends Widget
+  implements RemoteDataRendererRegistry.IRenderer {
+  constructor() {
+    super();
+    this.addClass('jp-HDF5Renderer');
+  }
+
+  /**
+   * Render the data.
+   */
+  render(data: IDataLocation): Promise<void> {
+    this.node.textContent = JSON.stringify(data.url);
+    return Promise.resolve(void 0);
+  }
+}
