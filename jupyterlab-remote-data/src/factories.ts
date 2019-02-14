@@ -9,7 +9,8 @@ import {
   AudioRenderer,
   ImageRenderer,
   PDFRenderer,
-  VideoRenderer
+  VideoRenderer,
+  HDF5Renderer
 } from './renderers';
 
 /**
@@ -52,11 +53,20 @@ export const videoRendererFactory: RemoteDataRendererRegistry.IRendererFactory =
 };
 
 /**
+ * HDF5 data renderer factory.
+ */
+export const hdf5RendererFactory: RemoteDataRendererRegistry.IRendererFactory = {
+  mimeTypes: ['application/x-hdf5'],
+  createRenderer: options => new HDF5Renderer()
+};
+
+/**
  * A set of default data renderer factories.
  */
 export const defaultFactories = [
   audioRendererFactory,
   imageRendererFactory,
   pdfRendererFactory,
-  videoRendererFactory
+  videoRendererFactory,
+  hdf5RendererFactory
 ];
