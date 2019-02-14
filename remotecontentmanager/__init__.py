@@ -60,7 +60,7 @@ def build_hdf5_sumary(path):
         f = h5py.File(path)
     except Exception:
         return "Something went wrong trying to read the content of this HDF5 file"
-    return str(visit(f))
+    return visit(f)
 
 
 class RemoteLocalFileManager(LargeFileManager):
