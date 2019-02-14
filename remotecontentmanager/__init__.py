@@ -99,7 +99,7 @@ data = h5read("{model_path}", "mygroup2/A", (2:3:15, 3:5))"""
             model["mimetype"] = MIMETYPE
             model['content'] = json.dumps({
                 'url': data,
-                'mimeType': inner_mime
+                'mimeType': 'application/x-hdf5'
             })
             model['format'] = MIMETYPE
             print('sending this model to the frontend:', model)
