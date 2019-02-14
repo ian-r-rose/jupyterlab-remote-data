@@ -88,13 +88,13 @@ class RemoteLocalFileManager(LargeFileManager):
                 "could not stat `{}`, not risking to send a loarge amount of data to the frontend."
             )
         if model['path'].endswith(".hdf5"):
-            actual_path = model_path
+            actual_path = model['path']
             ## probably need to munge the path so it is relativ to CWD
             data = {
                 "Python":f"""import h5py
-f = h5py.File('{model_path}', 'r')""",
+f = h5py.File('{actual_path}', 'r')""",
                 "Julia":"""using HDF5
-data = h5read("{model_path}", "mygroup2/A", (2:3:15, 3:5))"""
+data = h5read("{actual_path}", "mygroup2/A", (2:3:15, 3:5))"""
             }
             model["mimetype"] = MIMETYPE
             model['content'] = json.dumps({
