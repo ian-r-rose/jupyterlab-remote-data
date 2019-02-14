@@ -109,6 +109,7 @@ export class HDF5Renderer extends Widget
   constructor() {
     super();
     this.addClass('jp-HDF5Renderer');
+   this.addClass('jp-RenderedHTMLCommon');
   }
 
   /**

@@ -59,7 +59,7 @@ def build_hdf5_sumary(path):
     try:
         f = h5py.File(path)
     except Exception:
-        return "Something went wrong trying to read the content of this HDF5 file."
+        return "Something went wrong trying to read the content of this HDF5 file"
     return str(visit(f))
 
 
@@ -124,7 +124,6 @@ data = h5read("{actual_path}", "mygroup2/A", (2:3:15, 3:5))"""
                 'mimeType': 'application/x-hdf5'
             })
             model['format'] = MIMETYPE
-            print('sending this model to the frontend:', model)
             return model
 
 

@@ -20,3 +20,14 @@
   width: 100%;
   height: auto;
 }
+
+.jp-HDF5Renderer {
+  padding-top: var(--jp-private-markdownviewer-padding);
+  padding-right: var(--jp-private-markdownviewer-padding);
+  padding-bottom: var(--jp-private-markdownviewer-padding);
+  padding-left: var(--jp-private-markdownviewer-padding);
+  overflow: scroll;
+  height: 100%;
+
+
+}
