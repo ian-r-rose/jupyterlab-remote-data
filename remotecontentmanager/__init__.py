@@ -87,7 +87,26 @@ class RemoteLocalFileManager(LargeFileManager):
             raise ValueError(
                 "could not stat `{}`, not risking to send a loarge amount of data to the frontend."
             )
-        if any([h(model) for h in self.heuristics]):
+        if model['path'].endswith(".hdf5"):
+            """
+            """
+            data = {
+                "Python":"""import h5py
+f = h5py.File('mytestfile.hdf5', 'r')""",
+                "Julia":"""using HDF5
+data = h5read("/tmp/test2.h5", "mygroup2/A", (2:3:15, 3:5))"""
+            }
+            model["mimetype"] = MIMETYPE
+            model['content'] = json.dumps({
+                'url': data,
+                'mimeType': inner_mime
+            })
+            model['format'] = MIMETYPE
+            return model
+
+
+            pass
+        elif any([h(model) for h in self.heuristics]):
             model["mimetype"] = MIMETYPE
             model['content'] = json.dumps({
                 'url':'/files/'+path,
