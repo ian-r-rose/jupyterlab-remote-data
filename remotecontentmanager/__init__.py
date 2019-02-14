@@ -43,12 +43,21 @@ def extension_heuristic(model) -> bool:
     return model['path'].endswith("mp4")
 
 def build_hdf5_sumary(path):
+    def get_type(node):
+        return str(type(node)).split('.')[-1].split("'")[-2]
+
+    def visit(node):
+        if get_type(node) in ['Group', 'File']:
+            return {k:visit(v) for k,v in node.items()}
+        else:
+           return get_type(node)
+
     try:
         import h5py
     except ImportError:
         return "Install h5py on notebook server to see a hdf5 summary."
     f = h5py.File(path)
-    return f"This hdf5 dataset has {len(f.keys())} items:" + ','.join(f.keys())
+    return visit(f)
 
 
 class RemoteLocalFileManager(LargeFileManager):
@@ -100,7 +109,7 @@ class RemoteLocalFileManager(LargeFileManager):
             actual_path = model['path']
             ## probably need to munge the path so it is relativ to CWD
             data = {
-                "Markdown": build_hdf5_sumary(actual_path),
+                "summary": build_hdf5_sumary(actual_path),
                 "Python":f"""import h5py
 f = h5py.File('{actual_path}', 'r')""",
                 "Julia":f"""using HDF5
