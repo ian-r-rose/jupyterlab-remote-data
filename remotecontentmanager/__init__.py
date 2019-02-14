@@ -43,7 +43,10 @@ def extension_heuristic(model) -> bool:
     return model['path'].endswith("mp4")
 
 def build_hdf5_sumary(path):
-    import h5py
+    try:
+        import h5py
+    except ImportError:
+        return "Install h5py on notebook server to see a hdf5 summary."
     f = h5py.File(path)
     return f"This hdf5 dataset has {len(f.keys())} items:" + ','.join(f.keys())
 
@@ -100,7 +103,7 @@ class RemoteLocalFileManager(LargeFileManager):
                 "Markdown": build_hdf5_sumary(actual_path),
                 "Python":f"""import h5py
 f = h5py.File('{actual_path}', 'r')""",
-                "Julia":"""using HDF5
+                "Julia":f"""using HDF5
 data = h5read("{actual_path}", "mygroup2/A", (2:3:15, 3:5))"""
             }
             model["mimetype"] = MIMETYPE
