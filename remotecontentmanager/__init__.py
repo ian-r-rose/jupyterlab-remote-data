@@ -70,13 +70,15 @@ class RemoteLocalFileManager(LargeFileManager):
         model["type"] = "file"
 
         os_path = self._get_os_path(path)
-        model["mimetype"] = mimetypes.guess_type(os_path)[0]
+        inner_mime = mimetypes.guess_type(os_path)[0]
+        model["mimetype"] = inner_mime
 
         # this is new. Let's include it in all our responses to simplify
         # handling on the other side
         model["streamable"] = True
         model["api_type"] = "Range-Request"
         model["http_range_url"] = "figure it out"
+        model["url"] = f'http://localhost:8888/api/files/{path}'
         model[
             "metadata"
         ] = {}  # nothign for now, should we inject some things like how to load it with dask, S3 or other ?
@@ -86,12 +88,11 @@ class RemoteLocalFileManager(LargeFileManager):
                 "could not stat `{}`, not risking to send a loarge amount of data to the frontend."
             )
         if any([h(model) for h in self.heuristics]):
-            model["inner_mimetype"] = model["mimetype"]
             model["mimetype"] = MIMETYPE
             model['content'] = json.dumps({
-                'stream_url':'/files/'+path
-                                           
-                                           })
+                'url':'/files/'+path,
+                'mimeType': inner_mime
+            })
             model['format'] = MIMETYPE
             return model
 
